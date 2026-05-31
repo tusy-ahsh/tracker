@@ -2,70 +2,86 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Трекер">
 <title>Трекер привычек</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F7F5F0;
+    --bg: #F8F5F0;
     --surface: #FFFFFF;
-    --surface2: #F0EDE6;
+    --surface2: #F2EDE6;
+    --surface3: #EDE8E0;
     --accent: #5C7A5E;
-    --text: #2C2A24;
-    --text2: #7A7670;
-    --text3: #A8A49E;
-    --border: rgba(44,42,36,0.1);
-    --border2: rgba(44,42,36,0.18);
+    --accent-soft: rgba(92,122,94,0.10);
+    --choco: #3D2B1F;
+    --choco2: #6B4C3B;
+    --choco3: #A07860;
+    --text: #2C2418;
+    --text2: #7A6A5A;
+    --text3: #B0A090;
+    --border: rgba(61,43,31,0.08);
+    --border2: rgba(61,43,31,0.15);
     --done-bg: #5C7A5E;
     --done-text: #fff;
-    --skip-bg: #F0EDE6;
-    --skip-text: #A8A49E;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --skip-bg: #EDE8E0;
+    --skip-text: #B0A090;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --radius-xs: 8px;
     --warn: #B85A1A;
     --warn-bg: #FDF0E6;
+    --shadow-sm: 0 2px 8px rgba(61,43,31,0.08);
+    --shadow-md: 0 4px 16px rgba(61,43,31,0.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { background: var(--bg); }
-  body { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+  body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+
+  /* FIX iOS zoom */
+  input, select, textarea { font-size: 16px !important; }
 
   /* HEADER */
   .app-header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 20px 24px 0; position: sticky; top: 0; z-index: 10;
+    background: var(--surface);
+    border-bottom: 1.5px solid var(--border);
+    padding: 20px 24px 0;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: var(--shadow-sm);
   }
   .header-top {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 16px; gap: 16px;
   }
   .app-header h1 {
-    font-family: 'Spectral', serif; font-size: 22px; font-weight: 400;
-    color: var(--text); letter-spacing: 0.01em;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--choco); letter-spacing: -0.01em;
   }
   .header-actions { display: flex; gap: 8px; flex-shrink: 0; }
   .btn {
     display: inline-flex; align-items: center; gap: 6px;
     border: none; border-radius: var(--radius-sm);
-    padding: 8px 16px; font-size: 13px; font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer; transition: opacity 0.15s, transform 0.1s; white-space: nowrap;
+    padding: 8px 16px; font-size: 12px; font-weight: 600;
+    font-family: 'Montserrat', sans-serif; letter-spacing: 0.01em;
+    cursor: pointer; transition: all 0.18s; white-space: nowrap;
+    box-shadow: var(--shadow-sm);
   }
-  .btn:hover { opacity: 0.85; }
-  .btn:active { transform: scale(0.97); }
-  .btn-export { background: #4A6FA5; color: white; }
-  .btn-import { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
+  .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn:active { transform: scale(0.97); box-shadow: none; }
+  .btn-export { background: var(--choco2); color: white; }
+  .btn-import { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); box-shadow: none; }
+  .btn-quick { background: var(--accent); color: white; }
 
   /* TABS */
-  .tabs {
-    display: flex; gap: 0; margin-top: 4px;
-  }
+  .tabs { display: flex; gap: 0; margin-top: 4px; }
   .tab-btn {
-    flex: 1; padding: 11px 16px; border: none; background: none;
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    flex: 1; padding: 12px 16px; border: none; background: none;
+    font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.02em; text-transform: uppercase;
     color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent;
     transition: color 0.15s, border-color 0.15s;
   }
@@ -74,147 +90,317 @@
 
   /* WEEK NAV */
   .week-bar {
-    background: var(--surface); border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    border-bottom: 1.5px solid var(--border);
     padding: 12px 24px; display: flex; align-items: center; gap: 10px;
   }
   .nav-arrow {
-    background: var(--surface2); border: none; border-radius: var(--radius-sm);
-    width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: var(--text2);
+    background: var(--surface2); border: none; border-radius: var(--radius-xs);
+    width: 36px; height: 36px; cursor: pointer; font-size: 16px; color: var(--choco2);
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s; flex-shrink: 0;
+    transition: all 0.15s; flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
   }
-  .nav-arrow:hover { background: var(--border2); }
-  .week-label { font-size: 14px; color: var(--text2); flex: 1; text-align: center; }
+  .nav-arrow:hover { background: var(--surface3); transform: translateY(-1px); }
+  .week-label {
+    font-size: 13px; font-weight: 500; color: var(--text2);
+    flex: 1; text-align: center; font-family: 'Inter', sans-serif;
+  }
   .btn-today {
     background: var(--accent); color: white; border: none;
     border-radius: var(--radius-sm); padding: 8px 16px;
-    font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif;
-    cursor: pointer; transition: opacity 0.15s; flex-shrink: 0;
+    font-size: 12px; font-weight: 600; font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
   }
-  .btn-today:hover { opacity: 0.85; }
+  .btn-today:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
 
   /* VIEWS */
   .view { display: none; }
   .view.active { display: block; }
 
-  /* TABLE VIEW */
-  .table-scroll { overflow-x: auto; padding: 16px 24px 0; }
-  table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 520px; }
+  /* TABLE */
+  .table-scroll { overflow-x: auto; padding: 20px 20px 0; }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 2px;
+    min-width: 520px;
+  }
+
+  /* Sticky header */
   thead th {
-    background: var(--surface); font-size: 11px; font-weight: 500; color: var(--text3);
-    padding: 10px 10px 8px; text-align: center;
-    border-bottom: 1px solid var(--border); letter-spacing: 0.04em; text-transform: uppercase;
+    background: var(--bg);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--choco3);
+    padding: 8px 10px 10px; text-align: center;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    position: sticky; top: 0; z-index: 3;
+    border-bottom: 2px solid var(--border2);
   }
   thead th.param-col {
-    text-align: left; min-width: 180px; padding-left: 14px;
-    position: sticky; left: 0; z-index: 2; background: var(--surface);
+    text-align: left; min-width: 160px; padding-left: 16px;
+    position: sticky; top: 0; left: 0; z-index: 4; background: var(--bg);
   }
-  tbody tr:nth-child(even) td { background: rgba(240,237,230,0.3); }
+
+  /* Rows - air instead of borders */
+  tbody tr { transition: all 0.12s; }
+  tbody tr:nth-child(even) td { background: var(--surface2); }
+  tbody tr:nth-child(odd) td { background: var(--surface); }
   tbody tr td {
-    padding: 8px 10px; border-bottom: 1px solid var(--border);
-    vertical-align: middle; background: var(--surface); transition: background 0.1s;
+    padding: 10px 10px;
+    border: none;
+    vertical-align: middle;
+    transition: background 0.1s;
   }
-  tbody tr:hover td { background: rgba(240,237,230,0.5); }
-  tbody tr:nth-child(even):hover td { background: rgba(240,237,230,0.7); }
+  tbody tr td:first-child { border-radius: var(--radius-xs) 0 0 var(--radius-xs); }
+  tbody tr td:last-child { border-radius: 0 var(--radius-xs) var(--radius-xs) 0; }
+  tbody tr:hover td { background: var(--surface3) !important; }
+
   td.param-name {
-    font-size: 13px; color: var(--text); padding-left: 14px; min-width: 180px;
-    position: sticky; left: 0; z-index: 1; background: var(--surface);
-    box-shadow: 2px 0 6px rgba(44,42,36,0.07);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: var(--choco); padding-left: 16px; min-width: 160px;
+    position: sticky; left: 0; z-index: 1;
+    box-shadow: 3px 0 8px rgba(61,43,31,0.06);
   }
-  td.day-cell { text-align: center; min-width: 62px; }
-  td.today-cell { background: rgba(92,122,94,0.07) !important; }
+  td.day-cell { text-align: center; min-width: 64px; }
+  td.today-cell { background: var(--accent-soft) !important; }
 
+  /* CHECK BUTTON — rounded square with soft shadow */
   .check-btn {
-    width: 32px; height: 32px; border-radius: 50%;
-    border: 1.5px solid var(--border2); background: none;
-    cursor: pointer; font-size: 14px;
+    width: 34px; height: 34px;
+    border-radius: var(--radius-xs);
+    border: 1.5px solid var(--border2);
+    background: var(--surface);
+    cursor: pointer; font-size: 13px; font-weight: 700;
     display: inline-flex; align-items: center; justify-content: center;
-    transition: all 0.15s; color: var(--text3);
+    transition: all 0.18s; color: var(--text3);
+    box-shadow: var(--shadow-sm);
   }
-  .check-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .check-btn.done { background: var(--done-bg); border-color: var(--done-bg); color: var(--done-text); }
-  .check-btn.skip { background: var(--skip-bg); border-color: transparent; color: var(--skip-text); }
+  .check-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .check-btn.done {
+    background: var(--done-bg); border-color: var(--done-bg);
+    color: var(--done-text);
+    box-shadow: 0 3px 10px rgba(92,122,94,0.35);
+  }
+  .check-btn.skip {
+    background: var(--skip-bg); border-color: transparent;
+    color: var(--skip-text); box-shadow: none;
+  }
 
+  /* NUM INPUT — beige pill */
   .num-input {
-    width: 52px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 5px 4px; text-align: center; font-size: 13px;
-    font-family: 'DM Sans', sans-serif; background: transparent; color: var(--text);
-    transition: border-color 0.15s;
+    width: 54px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 6px 4px; text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px !important;
+    font-weight: 600;
+    background: var(--surface2);
+    color: var(--choco);
+    transition: all 0.15s;
+    box-shadow: inset 0 1px 3px rgba(61,43,31,0.05);
   }
-  .num-input:focus { outline: none; border-color: var(--accent); }
-  .text-input {
-    width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 5px 8px; font-size: 12px; font-family: 'DM Sans', sans-serif;
-    background: transparent; color: var(--text); min-width: 90px;
-    transition: border-color 0.15s;
+  .num-input:focus {
+    outline: none; border-color: var(--accent);
+    background: white; box-shadow: 0 0 0 3px var(--accent-soft);
   }
-  .text-input:focus { outline: none; border-color: var(--accent); }
 
+  /* NOTES */
+  .notes-input {
+    width: 100%; border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 6px 10px; font-family: 'Inter', sans-serif; font-size: 12px;
+    background: var(--surface2); color: var(--choco); min-width: 130px;
+    min-height: 64px; resize: vertical; transition: all 0.15s;
+  }
+  .notes-input:focus { outline: none; border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  /* SECTION DIVIDERS */
   .section-divider td:first-child { position: sticky; left: 0; z-index: 1; }
   .section-divider td {
-    background: var(--bg) !important; padding: 8px 14px 3px;
-    font-size: 10px; color: var(--text3); text-transform: uppercase;
-    letter-spacing: 0.06em; font-weight: 500; border-bottom: none;
+    background: var(--bg) !important;
+    padding: 16px 16px 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px; color: var(--choco3);
+    text-transform: uppercase; letter-spacing: 0.10em;
+    font-weight: 700; border: none;
   }
 
   /* PROGRESS VIEW */
-  .progress-view { padding: 20px 24px; }
+  .progress-view { padding: 20px 20px; }
   .progress-view h2 {
-    font-family: 'Spectral', serif; font-size: 18px; font-weight: 400;
-    color: var(--text); margin-bottom: 6px;
+    font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700;
+    color: var(--choco); margin-bottom: 6px; letter-spacing: -0.01em;
   }
-  .progress-week-label { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+  .progress-week-label { font-size: 12px; color: var(--text3); margin-bottom: 16px; font-weight: 500; }
 
-  .progress-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .period-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .period-btn {
+    padding: 9px 22px; border: 1.5px solid var(--border2); border-radius: 24px;
+    background: none; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text2); cursor: pointer; transition: all 0.18s;
+  }
+  .period-btn.active { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 4px 12px rgba(92,122,94,0.3); }
+  .period-btn:hover:not(.active) { background: var(--surface2); }
 
+  /* Chart card */
+  .chart-card {
+    background: var(--surface); border-radius: 20px;
+    padding: 20px; margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(61,43,31,0.07);
+    border: 1px solid var(--border);
+  }
+  .chart-card-title {
+    font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700;
+    color: var(--choco3); text-transform: uppercase; letter-spacing: 0.10em; margin-bottom: 16px;
+  }
+  .chart-metric-label {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+    color: var(--choco2); margin-bottom: 6px; letter-spacing: 0.01em;
+  }
+
+  /* Progress section title */
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px; font-weight: 700; color: var(--choco3);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 12px; margin-top: 4px;
+  }
+
+  /* Nutrient cards */
+  .progress-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
   .p-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 18px;
+    border-radius: 20px; padding: 18px 18px;
+    box-shadow: 0 4px 15px rgba(61,43,31,0.05);
   }
-  .p-card.warn { border-color: rgba(184,90,26,0.35); background: var(--warn-bg); }
+  .p-card.warn { border-color: rgba(184,90,26,0.25); background: var(--warn-bg); }
   .p-card.full { grid-column: 1 / -1; }
-
-  .p-title { font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .p-title {
+    font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700;
+    color: var(--choco3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 6px;
+  }
   .p-nums { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
-  .p-big { font-size: 28px; font-weight: 500; color: var(--text); }
-  .p-unit { font-size: 12px; color: var(--text3); }
-  .p-sub { font-size: 11px; color: var(--text3); margin-bottom: 10px; }
-  .p-bar { background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 5px; }
-  .p-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; background: var(--accent); }
+  .p-big { font-size: 26px; font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--choco); }
+  .p-unit { font-size: 11px; color: var(--text3); font-weight: 400; }
+  .p-sub { font-size: 11px; color: var(--text3); margin-bottom: 10px; line-height: 1.4; }
+  .p-bar { background: var(--surface2); border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 5px; }
+  .p-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease-in-out; background: var(--accent); }
   .p-fill.warn { background: var(--warn); }
-  .p-fill.blue { background: #4A6FA5; }
-  .p-fill.purple { background: #7A6FA5; }
-  .p-pct { font-size: 11px; color: var(--text3); }
+  .p-fill.blue { background: #7A9FC9; }
+  .p-fill.purple { background: #9A8FC9; }
+  .p-pct { font-size: 11px; color: var(--text3); font-weight: 500; }
   .warn-text { font-size: 11px; color: var(--warn); margin-top: 8px; line-height: 1.4; }
 
-  .mood-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .mood-label { font-size: 12px; color: var(--text2); width: 90px; flex-shrink: 0; }
-  .mood-bar-wrap { flex: 1; background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden; }
-  .mood-bar-fill { height: 100%; border-radius: 4px; }
-  .mood-val { font-size: 12px; font-weight: 500; color: var(--text); width: 28px; text-align: right; flex-shrink: 0; }
-
-  .habits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  /* Habits grid - 2 columns, big cards */
+  .habits-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .habit-chip {
-    background: var(--surface2); border-radius: var(--radius-sm);
-    padding: 10px 12px; text-align: center;
+    background: var(--surface); border-radius: 20px;
+    padding: 18px 16px; text-align: center;
+    box-shadow: 0 4px 15px rgba(61,43,31,0.05);
+    border: 1px solid var(--border);
+    transition: transform 0.18s, box-shadow 0.18s;
   }
-  .habit-chip-icon { font-size: 18px; margin-bottom: 4px; }
-  .habit-chip-label { font-size: 10px; color: var(--text2); margin-bottom: 3px; }
-  .habit-chip-val { font-size: 16px; font-weight: 500; color: var(--text); }
-  .habit-chip-sub { font-size: 10px; color: var(--text3); }
+  .habit-chip:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(61,43,31,0.09); }
+  .habit-chip-icon { font-size: 24px; margin-bottom: 8px; }
+  .habit-chip-label {
+    font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700;
+    color: var(--choco3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+  .habit-chip-val { font-size: 22px; font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--choco); }
+  .habit-chip-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
 
-  .section-title {
-    font-size: 11px; font-weight: 500; color: var(--text3);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    margin-bottom: 10px; margin-top: 4px;
+  /* QUICK INPUT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(61,43,31,0.45);
+    z-index: 100; display: flex; align-items: center; justify-content: center;
+    padding: 20px; backdrop-filter: blur(4px);
   }
+  .modal-overlay.hidden { display: none; }
+  .modal {
+    background: var(--surface); border-radius: var(--radius);
+    width: 100%; max-width: 420px; padding: 28px 24px;
+    box-shadow: 0 24px 64px rgba(61,43,31,0.22);
+  }
+  .modal-step { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--choco3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .modal-label { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 600; color: var(--choco); margin-bottom: 20px; line-height: 1.2; letter-spacing: -0.01em; }
+
+  .modal-check-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  .modal-check-btn {
+    flex: 1; padding: 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border2);
+    background: var(--surface2); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; color: var(--text2);
+    box-shadow: var(--shadow-sm);
+  }
+  .modal-check-btn.selected-yes { background: var(--done-bg); border-color: var(--done-bg); color: white; box-shadow: 0 4px 12px rgba(92,122,94,0.35); }
+  .modal-check-btn.selected-skip { background: var(--surface3); border-color: transparent; color: var(--text3); box-shadow: none; }
+  .modal-check-btn:hover:not(.selected-yes):not(.selected-skip) { border-color: var(--accent); color: var(--accent); }
+
+  .modal-num-wrap { margin-bottom: 24px; }
+  .modal-num-input {
+    width: 100%; border: 1.5px solid var(--border2); border-radius: var(--radius-sm);
+    padding: 12px 16px; font-size: 18px; font-family: 'DM Sans', sans-serif;
+    background: transparent; color: var(--text); text-align: center;
+    transition: border-color 0.15s;
+  }
+  .modal-num-input:focus { outline: none; border-color: var(--accent); }
+
+  .modal-text-wrap { margin-bottom: 24px; }
+  .modal-text-input {
+    width: 100%; border: 1.5px solid var(--border2); border-radius: var(--radius-sm);
+    padding: 12px 16px; font-size: 15px; font-family: 'DM Sans', sans-serif;
+    background: transparent; color: var(--text); min-height: 80px; resize: none;
+    transition: border-color 0.15s;
+  }
+  .modal-text-input:focus { outline: none; border-color: var(--accent); }
+
+  .modal-awareness {
+    background: rgba(92,122,94,0.08); border-radius: var(--radius-sm);
+    padding: 14px 16px; margin-bottom: 24px;
+  }
+  .modal-awareness-label { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; font-weight: 500; }
+  .modal-awareness-q { font-size: 14px; color: var(--text); line-height: 1.5; font-style: italic; }
+  .modal-awareness-input {
+    width: 100%; border: none; border-top: 1px solid var(--border); margin-top: 10px;
+    padding: 8px 0 0; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    background: transparent; color: var(--text); resize: none; min-height: 50px;
+  }
+  .modal-awareness-input:focus { outline: none; }
+
+  .modal-progress { background: var(--surface2); border-radius: 4px; height: 4px; margin-bottom: 20px; overflow: hidden; }
+  .modal-progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s ease; }
+
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btn-back {
+    padding: 12px 20px; border: 1.5px solid var(--border2); border-radius: var(--radius-sm);
+    background: var(--surface2); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--text2); cursor: pointer; transition: all 0.15s;
+  }
+  .modal-btn-next {
+    flex: 1; padding: 12px 20px; border: none; border-radius: var(--radius-sm);
+    background: var(--accent); color: white; font-family: 'Montserrat', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer; transition: all 0.15s;
+    box-shadow: 0 4px 12px rgba(92,122,94,0.3);
+  }
+  .modal-btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(92,122,94,0.4); }
 
   /* TOAST */
   .toast {
     position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-    background: var(--text); color: white; padding: 11px 22px;
-    border-radius: 20px; font-size: 13px; z-index: 100;
-    opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap;
+    background: var(--choco); color: white; padding: 12px 24px;
+    border-radius: 20px; font-size: 13px; font-weight: 500;
+    font-family: 'Montserrat', sans-serif; letter-spacing: 0.02em;
+    z-index: 200; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(61,43,31,0.25);
   }
   .toast.show { opacity: 1; }
   #importFile { display: none; }
@@ -226,6 +412,7 @@
     .app-header, .week-bar, .progress-view { padding-left: 16px; padding-right: 16px; }
     .table-scroll { padding-left: 16px; padding-right: 16px; }
     .habits-grid { grid-template-columns: repeat(2, 1fr); }
+    .header-actions { flex-wrap: wrap; }
   }
 </style>
 </head>
@@ -235,14 +422,15 @@
   <div class="header-top">
     <h1>Трекер привычек</h1>
     <div class="header-actions">
-      <button class="btn btn-export" onclick="exportData()">⬇ Экспорт</button>
-      <button class="btn btn-import" onclick="document.getElementById('importFile').click()">⬆ Импорт</button>
+      <button class="btn btn-quick" onclick="openQuick()">&#9654; Быстрый ввод</button>
+      <button class="btn btn-export" onclick="exportData()">&#8595; Экспорт</button>
+      <button class="btn btn-import" onclick="document.getElementById('importFile').click()">&#8593; Импорт</button>
       <input type="file" id="importFile" accept=".json" onchange="importData(event)">
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('tracker', this)">📋 Трекер</button>
-    <button class="tab-btn" onclick="switchTab('progress', this)">📊 Прогресс</button>
+    <button class="tab-btn active" onclick="switchTab('tracker', this)">Трекер</button>
+    <button class="tab-btn" onclick="switchTab('progress', this)">Прогресс</button>
   </div>
 </div>
 
@@ -261,21 +449,34 @@
 <!-- PROGRESS VIEW -->
 <div id="view-progress" class="view">
   <div class="progress-view">
-    <h2>Прогресс недели</h2>
-    <div class="progress-week-label" id="progressWeekLabel"></div>
-
-    <div class="section-title">Состояние</div>
-    <div class="p-card full" style="margin-bottom:12px">
-      <div class="p-title">Динамика по дням</div>
+    <h2>Прогресс</h2>
+    <div class="period-tabs">
+      <button class="period-btn active" onclick="switchPeriod('week', this)">Неделя</button>
+      <button class="period-btn" onclick="switchPeriod('month', this)">Месяц</button>
+    </div>
+    <div class="progress-week-label" id="progressPeriodLabel"></div>
+    <div class="chart-card">
+      <div class="chart-card-title">Динамика состояния</div>
       <div id="moodChart"></div>
     </div>
-
     <div class="section-title">Нутриенты</div>
     <div class="progress-grid" id="nutrientCards"></div>
+    <div class="section-title" style="margin-top:4px">Привычки</div>
+    <div class="habits-grid" id="habitsGrid"></div>
+  </div>
+</div>
 
-    <div class="section-title" style="margin-top:8px">Привычки за неделю</div>
-    <div class="p-card full" style="margin-bottom:0">
-      <div class="habits-grid" id="habitsGrid"></div>
+<!-- QUICK INPUT MODAL -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-progress"><div class="modal-progress-fill" id="modalProgressFill"></div></div>
+    <div class="modal-step" id="modalStep"></div>
+    <div class="modal-label" id="modalLabel"></div>
+    <div id="modalInput"></div>
+    <div class="hidden" id="modalAwareness"></div>
+    <div class="modal-btns">
+      <button class="modal-btn-back" onclick="quickBack()">&#8592;</button>
+      <button class="modal-btn-next" id="modalNextBtn" onclick="quickNext()">Далее</button>
     </div>
   </div>
 </div>
@@ -283,50 +484,83 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ---- DATA ----
 const PARAMS = [
   { section: 'Тело' },
-  { key: 'yoga',     label: 'Йога 🧘',                   type: 'check' },
-  { key: 'vitd',     label: 'Витамин D 🌿 (МЕ)',         type: 'num', placeholder: '2000' },
-  { key: 'chia',     label: 'Семена чиа 🌱',              type: 'check' },
-  { key: 'nuts',     label: 'Орехи бразильские (шт)',     type: 'num', placeholder: '1' },
-  { key: 'folic',    label: 'Фолиевая кислота',           type: 'check' },
-  { key: 'water',    label: 'Вода 💧 (стаканы)',          type: 'num', placeholder: '8' },
-  { key: 'steps',    label: 'Шаги 🚶',                   type: 'num', placeholder: '8000' },
-  { key: 'outside',  label: 'Выход на улицу ☀️',         type: 'check' },
+  { key: 'yoga',     label: 'Йога',                     emoji: 'Йога',    type: 'check' },
+  { key: 'vitd',     label: 'Витамин D (ME)',            emoji: 'Витамин D', type: 'num', placeholder: '2000' },
+  { key: 'chia',     label: 'Семена чиа',                emoji: 'Семена чиа', type: 'check' },
+  { key: 'nuts',     label: 'Орехи бразильские (шт)',    emoji: 'Орехи',   type: 'num', placeholder: '1' },
+  { key: 'folic',    label: 'Фолиевая кислота',          emoji: 'Фолиевая кислота', type: 'check' },
+  { key: 'water',    label: 'Вода (стаканы)',             emoji: 'Вода',    type: 'num', placeholder: '8' },
+  { key: 'steps',    label: 'Шаги',                      emoji: 'Шаги',    type: 'num', placeholder: '8000' },
+  { key: 'outside',  label: 'Выход на улицу',            emoji: 'Прогулка',type: 'check' },
   { section: 'Состояние' },
-  { key: 'mood',     label: 'Самочувствие (0–10)',        type: 'num', max: 10 },
-  { key: 'anxiety',  label: 'Тревожность (0–10)',         type: 'num', max: 10 },
-  { key: 'sleep',    label: 'Качество сна (0–10)',        type: 'num', max: 10 },
-  { key: 'cycle',    label: 'День цикла 🌙',             type: 'num', placeholder: '1' },
+  { key: 'mood',     label: 'Самочувствие (0-10)',       emoji: 'Самочувствие', type: 'num', max: 10 },
+  { key: 'anxiety',  label: 'Тревожность (0-10)',        emoji: 'Тревожность', type: 'num', max: 10 },
+  { key: 'sleep',    label: 'Качество сна (0-10)',       emoji: 'Сон',     type: 'num', max: 10 },
+  { key: 'cycle',    label: 'День цикла',                emoji: 'Цикл',    type: 'num', placeholder: '1' },
   { section: 'Работа' },
-  { key: 'consult',  label: 'Консультации (кол-во)',      type: 'num' },
-  { key: 'thesis',   label: 'Диссертация 📖 (часы)',     type: 'num', placeholder: '0' },
+  { key: 'consult',  label: 'Консультации (кол-во)',     emoji: 'Консультации', type: 'num' },
+  { key: 'thesis',   label: 'Диссертация (часы)',        emoji: 'Диссертация', type: 'num', placeholder: '0' },
   { section: 'Жизнь' },
-  { key: 'creative', label: 'Творчество 🎨',              type: 'check' },
-  { key: 'sex',      label: 'Секс 💜',                    type: 'check' },
+  { key: 'creative', label: 'Творчество',                emoji: 'Творчество', type: 'check' },
+  { key: 'sex',      label: 'Секс',                      emoji: 'Секс',    type: 'check' },
   { section: 'Заметки' },
-  { key: 'notes',    label: 'Обстоятельства / Примечания', type: 'text' },
+  { key: 'notes',     label: 'Обстоятельства / Примечания', emoji: 'Заметки',      type: 'text' },
+  { key: 'awareness', label: 'Вопрос осознанности',          emoji: 'Осознанность', type: 'awareness' },
+];
+
+const AWARENESS_QUESTIONS = [
+  'Что сегодня дало тебе энергию?',
+  'За что ты благодарна себе сегодня?',
+  'Что было самым сложным сегодня?',
+  'Что ты сделала для себя сегодня?',
+  'Какое твоё главное ощущение прямо сейчас?',
+  'Что хочется отпустить сегодня?',
+  'Что тебя порадовало сегодня, даже мелочь?',
+  'Как ты заботилась о себе сегодня?',
+  'Что ты узнала о себе сегодня?',
+  'Что ты хочешь взять с собой в завтрашний день?',
 ];
 
 const SE_PER_NUT = 70, SE_DAILY_NORM = 55, SE_MAX_WEEK = 400*7;
 const VITD_DAILY_GOAL = 2000, VITD_WEEK_GOAL = 14000;
 const STEPS_GOAL = 8000, WATER_GOAL = 8;
 const DAY_NAMES = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-const DAY_SHORT = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
 const MONTH_NAMES = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
 
-let weekOffset = 0, currentTab = 'tracker';
+let weekOffset = 0, currentTab = 'tracker', currentPeriod = 'week';
 let data = {};
 try { data = JSON.parse(localStorage.getItem('habitTrackerData') || '{}'); } catch(e) {}
 
-function dateKey(d) { return d.toISOString().slice(0,10); }
+// FIX: Use local date, not UTC
+function dateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
 function isToday(d) { return dateKey(d) === dateKey(new Date()); }
 
 function getWeekDates(offset) {
   const today = new Date(), dow = today.getDay();
   const monday = new Date(today);
   monday.setDate(today.getDate() - (dow===0?6:dow-1) + offset*7);
-  return Array.from({length:7}, (_,i) => { const d=new Date(monday); d.setDate(monday.getDate()+i); return d; });
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(monday); d.setDate(monday.getDate()+i); return d;
+  });
+}
+
+function getMonthDates(offset) {
+  const today = new Date();
+  const first = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+  const last = new Date(today.getFullYear(), today.getMonth() + offset + 1, 0);
+  const days = [];
+  for (let d = new Date(first); d <= last; d.setDate(d.getDate()+1)) {
+    days.push(new Date(d));
+  }
+  return days;
 }
 
 function save() { try { localStorage.setItem('habitTrackerData', JSON.stringify(data)); } catch(e) {} }
@@ -342,9 +576,9 @@ function exportData() {
   const blob = new Blob([JSON.stringify({exportedAt:new Date().toISOString(),version:1,data},null,2)],{type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `tracker-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = 'tracker-'+dateKey(new Date())+'.json';
   a.click(); URL.revokeObjectURL(a.href);
-  showToast('Данные экспортированы ✓');
+  showToast('Данные экспортированы');
 }
 
 function importData(event) {
@@ -354,7 +588,7 @@ function importData(event) {
     try {
       const parsed = JSON.parse(e.target.result);
       data = Object.assign({}, data, parsed.data||parsed);
-      save(); render(); showToast('Данные загружены ✓');
+      save(); render(); showToast('Данные загружены');
     } catch { showToast('Ошибка: неверный формат'); }
   };
   reader.readAsText(file); event.target.value='';
@@ -381,13 +615,156 @@ function switchTab(tab, el) {
   render();
 }
 
+function switchPeriod(period, el) {
+  currentPeriod = period;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderProgress();
+}
+
 function shiftWeek(dir) { weekOffset+=dir; render(); }
 function goToday() { weekOffset=0; render(); }
 
-function getWeekStats(days) {
-  let s = { moodS:0,moodC:0,anxS:0,anxC:0,sleepS:0,sleepC:0,yoga:0,chia:0,outside:0,creative:0,sex:0,folic:0,
-             totalNuts:0,totalVitD:0,totalSteps:0,stepsC:0,totalThesis:0,totalWater:0,waterC:0,totalConsult:0,
-             moodByDay:[], anxByDay:[], sleepByDay:[] };
+// ---- QUICK INPUT ----
+const QUICK_PARAMS = PARAMS.filter(p => p.key && p.type !== 'awareness');
+let quickIdx = 0;
+let quickDk = '';
+let quickAwarenessQ = '';
+
+
+// Total steps = all params + 1 awareness step at the end
+// quickIdx goes 0..QUICK_PARAMS.length-1 for params, then QUICK_PARAMS.length for awareness
+
+function openQuick() {
+  quickDk = dateKey(new Date());
+  quickIdx = 0;
+  quickAwarenessQ = AWARENESS_QUESTIONS[Math.floor(Math.random() * AWARENESS_QUESTIONS.length)];
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  renderQuickStep();
+}
+
+function closeQuick() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
+function renderQuickStep() {
+  const total = QUICK_PARAMS.length + 1; // +1 for awareness step
+  const isAwareness = quickIdx === QUICK_PARAMS.length;
+
+  document.getElementById('modalProgressFill').style.width = Math.round((quickIdx/total)*100)+'%';
+  document.getElementById('modalStep').textContent = (quickIdx+1) + ' / ' + total;
+  document.getElementById('modalNextBtn').textContent = isAwareness ? 'Готово' : 'Далее';
+
+  // Always hide awareness block — we render it manually in modalInput
+  document.getElementById('modalAwareness').classList.add('hidden');
+
+  if (isAwareness) {
+    document.getElementById('modalLabel').textContent = 'Вопрос на осознанность';
+    const stored = data[quickDk] ? (data[quickDk]['awareness'] || '') : '';
+    const parts = stored.split('\n---\n');
+    const savedA = parts.length > 1 ? parts[1] : '';
+    document.getElementById('modalInput').innerHTML =
+      '<div style="background:rgba(92,122,94,0.08);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:20px">' +
+        '<div style="font-size:14px;color:var(--text);line-height:1.6;font-style:italic">' + quickAwarenessQ + '</div>' +
+      '</div>' +
+      '<div class="modal-text-wrap">' +
+        '<textarea class="modal-text-input" id="qtInput" placeholder="твой ответ...">' + savedA + '</textarea>' +
+      '</div>';
+  } else {
+    const p = QUICK_PARAMS[quickIdx];
+    const existing = data[quickDk] ? data[quickDk][p.key] : null;
+    document.getElementById('modalLabel').textContent = p.label;
+    let html = '';
+    if (p.type === 'check') {
+      const state = existing || '';
+      const yesCls = state === 'done' ? 'selected-yes' : '';
+      const skipCls = state === 'skip' ? 'selected-skip' : '';
+      html = '<div class="modal-check-row">' +
+        '<button class="modal-check-btn '+yesCls+'" id="qcYes" onclick="quickSetCheck(\'done\')">Да</button>' +
+        '<button class="modal-check-btn '+skipCls+'" id="qcSkip" onclick="quickSetCheck(\'skip\')">Пропустить</button>' +
+        '</div>';
+    } else if (p.type === 'num') {
+      const v = (existing !== null && existing !== undefined && existing !== '') ? existing : '';
+      html = '<div class="modal-num-wrap">' +
+        '<input class="modal-num-input" type="number" inputmode="decimal" id="qnInput" min="0" max="'+(p.max||99999)+'" step="'+(p.max===10?1:0.5)+'" value="'+v+'" placeholder="'+(p.placeholder||'')+'">' +
+        '</div>';
+    } else if (p.type === 'text') {
+      const v = existing || '';
+      html = '<div class="modal-text-wrap">' +
+        '<textarea class="modal-text-input" id="qtInput" placeholder="заметки о дне...">'+v+'</textarea>' +
+        '</div>';
+    }
+    document.getElementById('modalInput').innerHTML = html;
+  }
+}
+
+function quickSetCheck(val) {
+  const p = QUICK_PARAMS[quickIdx];
+  if (!data[quickDk]) data[quickDk] = {};
+  const cur = data[quickDk][p.key];
+  data[quickDk][p.key] = cur === val ? null : val;
+  save();
+  renderQuickStep();
+}
+
+function quickSaveCurrentAndAdvance(goForward) {
+  const isAwareness = quickIdx === QUICK_PARAMS.length;
+  if (!data[quickDk]) data[quickDk] = {};
+
+  if (isAwareness) {
+    // Save awareness answer as "question\n---\nanswer" in awareness key
+    const inp = document.getElementById('qtInput');
+    if (inp) {
+      const answer = inp.value.trim();
+      if (answer) {
+        data[quickDk]['awareness'] = quickAwarenessQ + '\n---\n' + answer;
+      }
+      save();
+    }
+    if (goForward) {
+      closeQuick();
+      render();
+      showToast('День заполнен!');
+    } else {
+      quickIdx--;
+      renderQuickStep();
+    }
+  } else {
+    const p = QUICK_PARAMS[quickIdx];
+    if (p.type === 'num') {
+      const inp = document.getElementById('qnInput');
+      if (inp && inp.value !== '') data[quickDk][p.key] = inp.value;
+    } else if (p.type === 'text') {
+      const inp = document.getElementById('qtInput');
+      if (inp) data[quickDk][p.key] = inp.value;
+    }
+    save();
+    if (goForward) {
+      quickIdx++;
+      renderQuickStep();
+    } else {
+      if (quickIdx > 0) { quickIdx--; renderQuickStep(); }
+    }
+  }
+}
+
+function quickNext() { quickSaveCurrentAndAdvance(true); }
+function quickBack() { quickSaveCurrentAndAdvance(false); }
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeQuick();
+});
+
+// ---- STATS ----
+function getStats(days) {
+  let s = {
+    moodS:0,moodC:0,anxS:0,anxC:0,sleepS:0,sleepC:0,
+    yoga:0,chia:0,outside:0,creative:0,sex:0,folic:0,
+    totalNuts:0,totalVitD:0,totalSteps:0,stepsC:0,
+    totalThesis:0,totalWater:0,waterC:0,totalConsult:0,
+    moodByDay:[],anxByDay:[],sleepByDay:[]
+  };
   days.forEach(d => {
     const r = data[dateKey(d)]||{};
     if (r.mood!==undefined&&r.mood!==''){s.moodS+=+r.mood;s.moodC++;s.moodByDay.push(+r.mood);}else{s.moodByDay.push(null);}
@@ -409,149 +786,168 @@ function getWeekStats(days) {
   return s;
 }
 
-function renderMoodChart(days, s) {
-  const labels = days.map(d => DAY_SHORT[d.getDay()]);
+// ---- RENDER PROGRESS ----
+function renderProgress() {
+  const days = currentPeriod === 'week' ? getWeekDates(weekOffset) : getMonthDates(weekOffset);
+  const s = getStats(days);
+  const first=days[0], last=days[days.length-1];
+
+  if (currentPeriod === 'week') {
+    document.getElementById('progressPeriodLabel').textContent =
+      first.getDate()+' '+MONTH_NAMES[first.getMonth()]+' - '+last.getDate()+' '+MONTH_NAMES[last.getMonth()]+' '+last.getFullYear();
+  } else {
+    document.getElementById('progressPeriodLabel').textContent =
+      MONTH_NAMES[first.getMonth()]+' '+first.getFullYear();
+  }
+
+  // Mood chart — rounded bars, light labels, hover effect
+  const labels = days.map(d => currentPeriod==='week' ? DAY_NAMES[d.getDay()] : d.getDate());
   const metrics = [
-    { label: 'Самочувствие', values: s.moodByDay, color: '#5C7A5E' },
-    { label: 'Тревожность',  values: s.anxByDay,  color: '#B85A1A' },
-    { label: 'Сон',          values: s.sleepByDay, color: '#4A6FA5' },
+    { label:'Самочувствие', values:s.moodByDay, color:'#A3B18A' },
+    { label:'Тревожность',  values:s.anxByDay,  color:'#D8B4A8' },
+    { label:'Сон',          values:s.sleepByDay, color:'#A8BED8' },
   ];
-
-  let html = '';
+  let chartHtml = '';
   metrics.forEach(m => {
-    html += `<div class="mood-row" style="margin-bottom:14px">
-      <div class="mood-label" style="font-size:12px;color:var(--text2);width:100px;flex-shrink:0">${m.label}</div>
-      <div style="flex:1">
-        <div style="display:flex;gap:4px;align-items:flex-end;height:40px;margin-bottom:4px">`;
-    m.values.forEach((v, i) => {
-      const h = v !== null ? Math.round((v/10)*40) : 0;
-      const op = v !== null ? 1 : 0.15;
-      html += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
-        <div style="font-size:9px;color:var(--text3)">${v!==null?v:''}</div>
-        <div style="width:100%;height:${h}px;background:${m.color};opacity:${op};border-radius:3px 3px 0 0;min-height:2px"></div>
-      </div>`;
+    chartHtml += '<div style="margin-bottom:20px">';
+    chartHtml += '<div class="chart-metric-label">'+m.label+'</div>';
+    chartHtml += '<div style="display:flex;gap:3px;align-items:flex-end;height:48px;margin-bottom:5px">';
+    m.values.forEach(v => {
+      const h = v!==null ? Math.max(Math.round((v/10)*48), 4) : 4;
+      const op = v!==null ? 1 : 0.15;
+      chartHtml += '<div style="flex:1;height:'+h+'px;background:'+m.color+';opacity:'+op+
+        ';border-radius:4px 4px 0 0;min-height:4px;transition:opacity 0.2s;cursor:default" '+
+        'onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\''+(v!==null?'1':'0.15')+'\'"></div>';
     });
-    html += `</div>
-        <div style="display:flex;gap:4px">`;
+    chartHtml += '</div><div style="display:flex;gap:3px">';
     labels.forEach(l => {
-      html += `<div style="flex:1;text-align:center;font-size:9px;color:var(--text3)">${l}</div>`;
+      chartHtml += '<div style="flex:1;text-align:center;font-size:9px;color:var(--choco3);font-weight:300;font-family:Inter,sans-serif">'+l+'</div>';
     });
-    html += `</div></div></div>`;
+    chartHtml += '</div></div>';
   });
-
   // Legend
-  html += `<div style="display:flex;gap:14px;margin-top:4px">`;
+  chartHtml += '<div style="display:flex;gap:14px;margin-top:4px;flex-wrap:wrap">';
   metrics.forEach(m => {
-    html += `<div style="display:flex;align-items:center;gap:5px">
-      <div style="width:10px;height:10px;border-radius:2px;background:${m.color}"></div>
-      <span style="font-size:11px;color:var(--text3)">${m.label}</span>
-    </div>`;
+    chartHtml += '<div style="display:flex;align-items:center;gap:5px">'+
+      '<div style="width:10px;height:10px;border-radius:3px;background:'+m.color+'"></div>'+
+      '<span style="font-size:10px;color:var(--text3);font-family:Inter,sans-serif;font-weight:300">'+m.label+'</span></div>';
   });
-  html += '</div>';
-
-  document.getElementById('moodChart').innerHTML = html;
-}
-
-function renderProgress(days) {
-  const s = getWeekStats(days);
-  const first=days[0], last=days[6];
-  document.getElementById('progressWeekLabel').textContent =
-    `${first.getDate()} ${MONTH_NAMES[first.getMonth()]} — ${last.getDate()} ${MONTH_NAMES[last.getMonth()]} ${last.getFullYear()}`;
-
-  renderMoodChart(days, s);
+  chartHtml += '</div>';
+  document.getElementById('moodChart').innerHTML = chartHtml;
 
   // Nutrient cards
+  const daysCount = days.length;
   const seTotal = Math.round(s.totalNuts * SE_PER_NUT);
-  const seWeekNorm = SE_DAILY_NORM * 7;
-  const sePct = Math.min(Math.round(seTotal/seWeekNorm*100),200);
-  const seOver = seTotal > SE_MAX_WEEK;
-  const seNear = seTotal > SE_MAX_WEEK*0.7 && !seOver;
-  const vitdPct = Math.min(Math.round(s.totalVitD/VITD_WEEK_GOAL*100),150);
+  const seNorm = SE_DAILY_NORM * daysCount;
+  const sePct = Math.min(Math.round(seTotal/seNorm*100),200);
+  const seOver = seTotal > SE_MAX_WEEK * (daysCount/7);
+  const seNear = seTotal > SE_MAX_WEEK*0.7*(daysCount/7) && !seOver;
+  const vitdGoal = VITD_WEEK_GOAL * (daysCount/7);
+  const vitdPct = Math.min(Math.round(s.totalVitD/vitdGoal*100),150);
   const vitdDays = days.filter(d=>{const r=data[dateKey(d)]||{};return r.vitd!==undefined&&r.vitd!=='';}).length;
   const stepsAvg = s.stepsC ? Math.round(s.totalSteps/s.stepsC) : 0;
   const stepsPct = Math.min(Math.round(stepsAvg/STEPS_GOAL*100),150);
   const waterAvg = s.waterC ? (s.totalWater/s.waterC).toFixed(1) : 0;
   const waterPct = Math.min(Math.round(waterAvg/WATER_GOAL*100),150);
 
-  document.getElementById('nutrientCards').innerHTML = `
-    <div class="p-card${seOver?' warn':''}">
-      <div class="p-title">Селен</div>
-      <div class="p-nums"><span class="p-big">${seTotal}</span><span class="p-unit">мкг</span></div>
-      <div class="p-sub">Норма: ${seWeekNorm} мкг/нед · ${Math.round(s.totalNuts)} орехов</div>
-      <div class="p-bar"><div class="p-fill${seOver||seNear?' warn':''}" style="width:${Math.min(sePct,100)}%"></div></div>
-      <div class="p-pct">${sePct}% от нормы</div>
-      ${seOver?'<div class="warn-text">⚠️ Превышен безопасный предел</div>':''}
-    </div>
-    <div class="p-card">
-      <div class="p-title">Витамин D</div>
-      <div class="p-nums"><span class="p-big">${Math.round(s.totalVitD).toLocaleString('ru')}</span><span class="p-unit">МЕ</span></div>
-      <div class="p-sub">Цель: ${VITD_WEEK_GOAL.toLocaleString('ru')} МЕ/нед · ${vitdDays}/7 дней</div>
-      <div class="p-bar"><div class="p-fill blue" style="width:${Math.min(vitdPct,100)}%"></div></div>
-      <div class="p-pct">${vitdPct}% от цели</div>
-    </div>
-    <div class="p-card">
-      <div class="p-title">Шаги</div>
-      <div class="p-nums"><span class="p-big">${stepsAvg?stepsAvg.toLocaleString('ru'):'-'}</span><span class="p-unit">в среднем</span></div>
-      <div class="p-sub">Цель: ${STEPS_GOAL.toLocaleString('ru')}/день · Всего: ${s.totalSteps?s.totalSteps.toLocaleString('ru'):'-'}</div>
-      <div class="p-bar"><div class="p-fill" style="width:${Math.min(stepsPct,100)}%"></div></div>
-      <div class="p-pct">${stepsAvg?stepsPct+'% от цели':'Нет данных'}</div>
-    </div>
-    <div class="p-card">
-      <div class="p-title">Вода</div>
-      <div class="p-nums"><span class="p-big">${waterAvg||'-'}</span><span class="p-unit">ст/день</span></div>
-      <div class="p-sub">Цель: ${WATER_GOAL} стаканов в день</div>
-      <div class="p-bar"><div class="p-fill purple" style="width:${Math.min(waterPct,100)}%"></div></div>
-      <div class="p-pct">${s.waterC?waterPct+'% от цели':'Нет данных'}</div>
-    </div>
-  `;
+  document.getElementById('nutrientCards').innerHTML =
+    '<div class="p-card'+(seOver?' warn':'')+'">'+
+      '<div class="p-title">Селен</div>'+
+      '<div class="p-nums"><span class="p-big">'+seTotal+'</span><span class="p-unit">мкг</span></div>'+
+      '<div class="p-sub">Норма: '+seNorm+' мкг · '+Math.round(s.totalNuts)+' орехов</div>'+
+      '<div class="p-bar"><div class="p-fill'+(seOver||seNear?' warn':'')+'" style="width:'+Math.min(sePct,100)+'%"></div></div>'+
+      '<div class="p-pct">'+sePct+'% от нормы</div>'+
+      (seOver?'<div class="warn-text">Превышен безопасный предел</div>':'')+
+    '</div>'+
+    '<div class="p-card">'+
+      '<div class="p-title">Витамин D</div>'+
+      '<div class="p-nums"><span class="p-big">'+Math.round(s.totalVitD).toLocaleString('ru')+'</span><span class="p-unit">МЕ</span></div>'+
+      '<div class="p-sub">Цель: '+Math.round(vitdGoal).toLocaleString('ru')+' МЕ · '+vitdDays+'/'+daysCount+' дней</div>'+
+      '<div class="p-bar"><div class="p-fill blue" style="width:'+Math.min(vitdPct,100)+'%"></div></div>'+
+      '<div class="p-pct">'+vitdPct+'% от цели</div>'+
+    '</div>'+
+    '<div class="p-card">'+
+      '<div class="p-title">Шаги</div>'+
+      '<div class="p-nums"><span class="p-big">'+(stepsAvg?stepsAvg.toLocaleString('ru'):'-')+'</span><span class="p-unit">в среднем</span></div>'+
+      '<div class="p-sub">Цель: '+STEPS_GOAL.toLocaleString('ru')+'/день</div>'+
+      '<div class="p-bar"><div class="p-fill" style="width:'+Math.min(stepsPct,100)+'%"></div></div>'+
+      '<div class="p-pct">'+(stepsAvg?stepsPct+'% от цели':'Нет данных')+'</div>'+
+    '</div>'+
+    '<div class="p-card">'+
+      '<div class="p-title">Вода</div>'+
+      '<div class="p-nums"><span class="p-big">'+(waterAvg||'-')+'</span><span class="p-unit">ст/день</span></div>'+
+      '<div class="p-sub">Цель: '+WATER_GOAL+' стаканов/день</div>'+
+      '<div class="p-bar"><div class="p-fill purple" style="width:'+Math.min(waterPct,100)+'%"></div></div>'+
+      '<div class="p-pct">'+(s.waterC?waterPct+'% от цели':'Нет данных')+'</div>'+
+    '</div>';
 
-  // Habits
   const moodAvg = s.moodC ? (s.moodS/s.moodC).toFixed(1) : '-';
   const anxAvg  = s.anxC  ? (s.anxS/s.anxC).toFixed(1)   : '-';
   const sleepAvg= s.sleepC? (s.sleepS/s.sleepC).toFixed(1): '-';
+  const totalDays = daysCount;
 
-  document.getElementById('habitsGrid').innerHTML = `
-    <div class="habit-chip"><div class="habit-chip-icon">🧘</div><div class="habit-chip-label">Йога</div><div class="habit-chip-val">${s.yoga}/7</div><div class="habit-chip-sub">дней</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">😌</div><div class="habit-chip-label">Самочувствие</div><div class="habit-chip-val">${moodAvg}</div><div class="habit-chip-sub">среднее</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">😰</div><div class="habit-chip-label">Тревожность</div><div class="habit-chip-val">${anxAvg}</div><div class="habit-chip-sub">среднее</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">😴</div><div class="habit-chip-label">Сон</div><div class="habit-chip-val">${sleepAvg}</div><div class="habit-chip-sub">среднее</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">📖</div><div class="habit-chip-label">Диссертация</div><div class="habit-chip-val">${s.totalThesis||'-'}</div><div class="habit-chip-sub">часов</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">🩺</div><div class="habit-chip-label">Консультации</div><div class="habit-chip-val">${s.totalConsult||'-'}</div><div class="habit-chip-sub">всего</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">☀️</div><div class="habit-chip-label">На улице</div><div class="habit-chip-val">${s.outside}/7</div><div class="habit-chip-sub">дней</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">🎨</div><div class="habit-chip-label">Творчество</div><div class="habit-chip-val">${s.creative}/7</div><div class="habit-chip-sub">дней</div></div>
-    <div class="habit-chip"><div class="habit-chip-icon">💊</div><div class="habit-chip-label">Фолиевая</div><div class="habit-chip-val">${s.folic}/7</div><div class="habit-chip-sub">дней</div></div>
-  `;
+  document.getElementById('habitsGrid').innerHTML =
+    chip('Йога',        'yoga',    s.yoga+'/'+totalDays,        'дней',   '🧘')+
+    chip('Самочувствие','mood',    moodAvg,                     'среднее','😌')+
+    chip('Тревожность', 'anxiety', anxAvg,                      'среднее','😰')+
+    chip('Сон',         'sleep',   sleepAvg,                    'среднее','😴')+
+    chip('Диссертация', 'thesis',  (s.totalThesis||'-'),        'часов',  '📖')+
+    chip('Консультации','consult', (s.totalConsult||'-'),       'всего',  '🩺')+
+    chip('На улице',    'outside', s.outside+'/'+totalDays,     'дней',   '☀️')+
+    chip('Творчество',  'creative',s.creative+'/'+totalDays,    'дней',   '🎨')+
+    chip('Фолиевая',    'folic',   s.folic+'/'+totalDays,       'дней',   '💊');
 }
 
+function chip(label, key, val, sub, icon) {
+  return '<div class="habit-chip">'+
+    '<div class="habit-chip-icon">'+icon+'</div>'+
+    '<div class="habit-chip-label">'+label+'</div>'+
+    '<div class="habit-chip-val">'+val+'</div>'+
+    '<div class="habit-chip-sub">'+sub+'</div></div>';
+}
+
+// ---- RENDER TRACKER ----
 function renderTracker(days) {
   const table = document.getElementById('trackerTable');
   let html = '<thead><tr><th class="param-col">Параметр</th>';
   days.forEach(d => {
     const tc = isToday(d)?' today-cell':'';
     const bold = isToday(d)?'font-weight:600;color:#5C7A5E;':'';
-    html += `<th class="${tc}" style="${bold}">${DAY_NAMES[d.getDay()]}<br><span style="font-size:12px;font-weight:400">${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}</span></th>`;
+    html += '<th class="'+tc+'" style="'+bold+'">'+DAY_NAMES[d.getDay()]+'<br><span style="font-size:12px;font-weight:400">'+d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0')+'</span></th>';
   });
   html += '</tr></thead><tbody>';
 
   PARAMS.forEach(p => {
-    if (p.section) { html+=`<tr class="section-divider"><td colspan="8">${p.section}</td></tr>`; return; }
-    html += `<tr><td class="param-name">${p.label}</td>`;
+    if (p.section) { html+='<tr class="section-divider"><td colspan="8">'+p.section+'</td></tr>'; return; }
+    html += '<tr><td class="param-name">'+p.label+'</td>';
     days.forEach(d => {
       const dk = dateKey(d);
       const val = data[dk]?data[dk][p.key]:null;
       const tc = isToday(d)?' today-cell':'';
-      html += `<td class="day-cell${tc}">`;
+      html += '<td class="day-cell'+tc+'">';
       if (p.type==='check') {
         const state=val||'';
         const cls=state==='done'?'done':state==='skip'?'skip':'';
         const icon=state==='done'?'v':state==='skip'?'-':'.';
-        html+=`<button class="check-btn ${cls}" onclick="toggleCheck('${p.key}','${dk}')">${icon}</button>`;
+        html+='<button class="check-btn '+cls+'" onclick="toggleCheck(\''+p.key+'\',\''+dk+'\')">'+icon+'</button>';
       } else if (p.type==='num') {
         const v=(val!==null&&val!==undefined&&val!=='')?val:'';
-        html+=`<input class="num-input" type="number" min="0" max="${p.max||99999}" step="${p.max===10?1:0.5}" value="${v}" placeholder="${p.placeholder||'-'}" onchange="setVal('${p.key}','${dk}',this.value)">`;
+        html+='<input class="num-input" type="number" inputmode="decimal" min="0" max="'+(p.max||99999)+'" step="'+(p.max===10?1:0.5)+'" value="'+v+'" placeholder="'+(p.placeholder||'')+'" onchange="setVal(\''+p.key+'\',\''+dk+'\',this.value)">';
       } else if (p.type==='text') {
-        const v=(val||'').replace(/"/g,'&quot;');
-        html+=`<input class="text-input" type="text" value="${v}" placeholder="заметка..." onchange="setVal('${p.key}','${dk}',this.value)">`;
+        const v=(val||'').replace(/"/g,'&quot;').replace(/\n/g,'&#10;');
+        html+='<textarea class="notes-input" onchange="setVal(\''+p.key+'\',\''+dk+'\',this.value)" placeholder="заметка...">'+v+'</textarea>';
+      } else if (p.type==='awareness') {
+        // Show question in italic + answer below
+        const stored = val || '';
+        const parts = stored.split('\n---\n');
+        const q = parts[0] || '';
+        const a = parts[1] || '';
+        if (q) {
+          html += '<div style="font-size:11px;color:var(--text3);font-style:italic;margin-bottom:3px;min-width:120px">'+q+'</div>';
+          html += '<div style="font-size:12px;color:var(--text)">'+a+'</div>';
+        } else {
+          html += '<span style="color:var(--text3);font-size:12px">—</span>';
+        }
       }
       html+='</td>';
     });
@@ -561,14 +957,15 @@ function renderTracker(days) {
   table.innerHTML = html;
 }
 
+// ---- MAIN RENDER ----
 function render() {
   const days = getWeekDates(weekOffset);
   const first=days[0], last=days[6];
   document.getElementById('weekLabel').textContent =
-    `${first.getDate()} ${MONTH_NAMES[first.getMonth()]} — ${last.getDate()} ${MONTH_NAMES[last.getMonth()]} ${last.getFullYear()}`;
+    first.getDate()+' '+MONTH_NAMES[first.getMonth()]+' - '+last.getDate()+' '+MONTH_NAMES[last.getMonth()]+' '+last.getFullYear();
 
   if (currentTab==='tracker') renderTracker(days);
-  else renderProgress(days);
+  else renderProgress();
 }
 
 render();
