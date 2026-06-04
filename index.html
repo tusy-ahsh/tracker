@@ -168,6 +168,7 @@
   }
   td.day-cell { text-align: center; min-width: 64px; }
   td.today-cell { background: var(--accent-soft) !important; }
+  td.selected-cell { background: rgba(92,122,94,0.13) !important; }
 
   /* CHECK BUTTON — rounded square with soft shadow */
   .check-btn {
@@ -214,7 +215,7 @@
   .notes-input {
     width: 100%; border: 1.5px solid var(--border);
     border-radius: var(--radius-xs);
-    padding: 6px 10px; font-family: 'Inter', sans-serif; font-size: 12px;
+    padding: 6px 10px; font-family: 'Inter', sans-serif; font-size: 11px !important;
     background: var(--surface2); color: var(--choco); min-width: 130px;
     min-height: 64px; resize: vertical; transition: all 0.15s;
   }
@@ -405,6 +406,26 @@
   .toast.show { opacity: 1; }
   #importFile { display: none; }
 
+  /* YEAR COLOR MAP */
+  .year-map { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .year-month { flex: 1; min-width: 0; }
+  .year-month-label { font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; color: var(--choco3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; text-align: center; }
+  .year-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .year-day { aspect-ratio: 1; border-radius: 3px; min-width: 0; }
+
+  /* DAY PICKER in modal */
+  .modal-day-picker { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; background: var(--surface2); border-radius: var(--radius-sm); padding: 8px 12px; }
+  .modal-day-arrow { background: none; border: none; font-size: 16px; color: var(--choco2); cursor: pointer; padding: 2px 6px; }
+  .modal-day-label { flex: 1; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--choco); }
+  .modal-day-today { background: none; border: none; font-size: 11px; font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--accent); cursor: pointer; letter-spacing: 0.03em; white-space: nowrap; }
+
+  /* RANGE SLIDER for quick input */
+  .modal-range-wrap { margin-bottom: 24px; }
+  .modal-range-val { font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 700; color: var(--choco); text-align: center; margin-bottom: 12px; }
+  .modal-range { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--surface2); outline: none; }
+  .modal-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 2px 8px rgba(92,122,94,0.4); }
+  .modal-range-labels { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: var(--text3); font-family: 'Inter', sans-serif; }
+
   @media (max-width: 700px) {
     .progress-grid { grid-template-columns: 1fr; }
     .p-card.full { grid-column: 1; }
@@ -453,8 +474,15 @@
     <div class="period-tabs">
       <button class="period-btn active" onclick="switchPeriod('week', this)">Неделя</button>
       <button class="period-btn" onclick="switchPeriod('month', this)">Месяц</button>
+      <button class="period-btn" onclick="switchPeriod('year', this)">Год</button>
     </div>
     <div class="progress-week-label" id="progressPeriodLabel"></div>
+    <div id="yearView" style="display:none">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-family:Montserrat,sans-serif;font-size:12px;font-weight:500;color:var(--text3)">Стрелки меняют год</span>
+      </div>
+    </div>
+    <div id="weekMonthView">
     <div class="chart-card">
       <div class="chart-card-title">Динамика состояния</div>
       <div id="moodChart"></div>
@@ -463,6 +491,7 @@
     <div class="progress-grid" id="nutrientCards"></div>
     <div class="section-title" style="margin-top:4px">Привычки</div>
     <div class="habits-grid" id="habitsGrid"></div>
+    </div><!-- end weekMonthView -->
   </div>
 </div>
 
@@ -509,6 +538,7 @@ const PARAMS = [
   { section: 'Заметки' },
   { key: 'notes',     label: 'Обстоятельства / Примечания', emoji: 'Заметки',      type: 'text' },
   { key: 'awareness', label: 'Вопрос осознанности',          emoji: 'Осознанность', type: 'awareness' },
+  { key: 'value',     label: 'Вопрос на ценность',           emoji: 'Ценность',     type: 'awareness' },
 ];
 
 const AWARENESS_QUESTIONS = [
@@ -524,6 +554,19 @@ const AWARENESS_QUESTIONS = [
   'Что ты хочешь взять с собой в завтрашний день?',
 ];
 
+const VALUE_QUESTIONS = [
+  'Назови одно качество в себе, которым ты гордишься.',
+  'Что ты сделала сегодня, что требовало смелости?',
+  'Вспомни момент когда ты помогла кому-то — как это было?',
+  'Что в твоих отношениях с Аскаром ты ценишь больше всего?',
+  'Чему ты научилась за последнее время?',
+  'Что делает твою жизнь особенной прямо сейчас?',
+  'За что ты благодарна своему телу сегодня?',
+  'Какой твой поступок на этой неделе ты считаешь важным?',
+  'Что говорит о тебе то, как ты справляешься с трудностями?',
+  'Назови три вещи которые делают сегодняшний день ценным.',
+];
+
 const SE_PER_NUT = 70, SE_DAILY_NORM = 55, SE_MAX_WEEK = 400*7;
 const VITD_DAILY_GOAL = 2000, VITD_WEEK_GOAL = 14000;
 const STEPS_GOAL = 8000, WATER_GOAL = 8;
@@ -531,6 +574,7 @@ const DAY_NAMES = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
 const MONTH_NAMES = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
 
 let weekOffset = 0, currentTab = 'tracker', currentPeriod = 'week';
+let selectedDk = dateKey(new Date());
 let data = {};
 try { data = JSON.parse(localStorage.getItem('habitTrackerData') || '{}'); } catch(e) {}
 
@@ -619,26 +663,41 @@ function switchPeriod(period, el) {
   currentPeriod = period;
   document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
+  const isYear = period === 'year';
+  document.getElementById('yearView').style.display = isYear ? 'block' : 'none';
+  document.getElementById('weekMonthView').style.display = 'block';
   renderProgress();
 }
 
+function selectDate(dk) {
+  selectedDk = dk;
+  renderTracker(getWeekDates(weekOffset));
+}
+
 function shiftWeek(dir) { weekOffset+=dir; render(); }
-function goToday() { weekOffset=0; render(); }
+function goToday() { weekOffset=0; selectedDk=dateKey(new Date()); render(); }
 
 // ---- QUICK INPUT ----
 const QUICK_PARAMS = PARAMS.filter(p => p.key && p.type !== 'awareness');
 let quickIdx = 0;
 let quickDk = '';
 let quickAwarenessQ = '';
+let quickValueQ = '';
 
+// Steps: QUICK_PARAMS + awareness + value = length+2
+function getQuickTotal() { return QUICK_PARAMS.length + 2; }
 
-// Total steps = all params + 1 awareness step at the end
-// quickIdx goes 0..QUICK_PARAMS.length-1 for params, then QUICK_PARAMS.length for awareness
+function quickDateFromOffset(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d;
+}
 
 function openQuick() {
-  quickDk = dateKey(new Date());
+  quickDk = selectedDk;
   quickIdx = 0;
   quickAwarenessQ = AWARENESS_QUESTIONS[Math.floor(Math.random() * AWARENESS_QUESTIONS.length)];
+  quickValueQ = VALUE_QUESTIONS[Math.floor(Math.random() * VALUE_QUESTIONS.length)];
   document.getElementById('modalOverlay').classList.remove('hidden');
   renderQuickStep();
 }
@@ -647,18 +706,59 @@ function closeQuick() {
   document.getElementById('modalOverlay').classList.add('hidden');
 }
 
+function quickShiftDay(dir) {
+  quickDayOffset += dir;
+  const d = quickDateFromOffset(quickDayOffset);
+  quickDk = dateKey(d);
+  // Don't re-render full step, just update label
+  const el = document.getElementById('quickDayLabel');
+  if (el) {
+    const label = quickDayOffset === 0 ? 'Сегодня, ' : quickDayOffset === -1 ? 'Вчера, ' : '';
+    el.textContent = label + d.getDate() + ' ' + MONTH_NAMES[d.getMonth()];
+  }
+}
+
+function quickGoToday() {
+  quickDayOffset = 0;
+  quickDk = dateKey(new Date());
+  const el = document.getElementById('quickDayLabel');
+  const d = new Date();
+  if (el) el.textContent = 'Сегодня, ' + d.getDate() + ' ' + MONTH_NAMES[d.getMonth()];
+}
+
+function updateDayPicker() {
+  const el = document.getElementById('quickDayLabel');
+  if (!el) return;
+  const d = quickDateFromOffset(quickDayOffset);
+  const label = quickDayOffset === 0 ? 'Сегодня, ' : quickDayOffset === -1 ? 'Вчера, ' : '';
+  el.textContent = label + d.getDate() + ' ' + MONTH_NAMES[d.getMonth()];
+}
+
 function renderQuickStep() {
-  const total = QUICK_PARAMS.length + 1; // +1 for awareness step
+  const total = getQuickTotal();
   const isAwareness = quickIdx === QUICK_PARAMS.length;
+  const isValue = quickIdx === QUICK_PARAMS.length + 1;
 
   document.getElementById('modalProgressFill').style.width = Math.round((quickIdx/total)*100)+'%';
-  document.getElementById('modalStep').textContent = (quickIdx+1) + ' / ' + total;
-  document.getElementById('modalNextBtn').textContent = isAwareness ? 'Готово' : 'Далее';
-
-  // Always hide awareness block — we render it manually in modalInput
+  const todayDk = dateKey(new Date());
+  const dateSuffix = quickDk !== todayDk ? ' · ' + quickDk.split('-').reverse().join('.') : '';
+  document.getElementById('modalStep').textContent = (quickIdx+1) + ' / ' + total + dateSuffix;
+  document.getElementById('modalNextBtn').textContent = isValue ? 'Готово' : 'Далее';
   document.getElementById('modalAwareness').classList.add('hidden');
 
-  if (isAwareness) {
+  if (isValue) {
+    document.getElementById('modalLabel').textContent = 'Вопрос на ценность';
+    const stored = data[quickDk] ? (data[quickDk]['value'] || '') : '';
+    const parts = stored.split('\n---\n');
+    const savedA = parts.length > 1 ? parts[1] : '';
+    document.getElementById('modalInput').innerHTML =
+      '<div style="background:rgba(184,90,26,0.07);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:20px">' +
+        '<div style="font-size:14px;color:var(--choco);line-height:1.6;font-style:italic">' + quickValueQ + '</div>' +
+      '</div>' +
+      '<div class="modal-text-wrap">' +
+        '<textarea class="modal-text-input" id="qtInput" placeholder="твой ответ...">' + savedA + '</textarea>' +
+      '</div>';
+  } else if (isAwareness) {
     document.getElementById('modalLabel').textContent = 'Вопрос на осознанность';
     const stored = data[quickDk] ? (data[quickDk]['awareness'] || '') : '';
     const parts = stored.split('\n---\n');
@@ -683,10 +783,18 @@ function renderQuickStep() {
         '<button class="modal-check-btn '+yesCls+'" id="qcYes" onclick="quickSetCheck(\'done\')">Да</button>' +
         '<button class="modal-check-btn '+skipCls+'" id="qcSkip" onclick="quickSetCheck(\'skip\')">Пропустить</button>' +
         '</div>';
+    } else if (p.type === 'num' && p.max === 10) {
+      const v = (existing !== null && existing !== undefined && existing !== '') ? parseFloat(existing) : 5;
+      html = '<div class="modal-range-wrap">' +
+        '<div class="modal-range-val" id="rangeVal">' + v + '</div>' +
+        '<input class="modal-range" type="range" id="qnInput" min="0" max="10" step="1" value="' + v + '" ' +
+          'oninput="document.getElementById(\'rangeVal\').textContent=this.value">' +
+        '<div class="modal-range-labels"><span>0</span><span>5</span><span>10</span></div>' +
+        '</div>';
     } else if (p.type === 'num') {
       const v = (existing !== null && existing !== undefined && existing !== '') ? existing : '';
       html = '<div class="modal-num-wrap">' +
-        '<input class="modal-num-input" type="number" inputmode="decimal" id="qnInput" min="0" max="'+(p.max||99999)+'" step="'+(p.max===10?1:0.5)+'" value="'+v+'" placeholder="'+(p.placeholder||'')+'">' +
+        '<input class="modal-num-input" type="number" inputmode="decimal" id="qnInput" min="0" max="'+(p.max||99999)+'" step="0.5" value="'+v+'" placeholder="'+(p.placeholder||'')+'">' +
         '</div>';
     } else if (p.type === 'text') {
       const v = existing || '';
@@ -709,26 +817,26 @@ function quickSetCheck(val) {
 
 function quickSaveCurrentAndAdvance(goForward) {
   const isAwareness = quickIdx === QUICK_PARAMS.length;
+  const isValue = quickIdx === QUICK_PARAMS.length + 1;
   if (!data[quickDk]) data[quickDk] = {};
 
-  if (isAwareness) {
-    // Save awareness answer as "question\n---\nanswer" in awareness key
+  if (isValue) {
+    const inp = document.getElementById('qtInput');
+    if (inp && inp.value.trim()) {
+      data[quickDk]['value'] = quickValueQ + '\n---\n' + inp.value.trim();
+    }
+    save();
+    if (goForward) { closeQuick(); render(); showToast('День заполнен!'); }
+    else { quickIdx--; renderQuickStep(); }
+  } else if (isAwareness) {
     const inp = document.getElementById('qtInput');
     if (inp) {
       const answer = inp.value.trim();
-      if (answer) {
-        data[quickDk]['awareness'] = quickAwarenessQ + '\n---\n' + answer;
-      }
+      if (answer) data[quickDk]['awareness'] = quickAwarenessQ + '\n---\n' + answer;
       save();
     }
-    if (goForward) {
-      closeQuick();
-      render();
-      showToast('День заполнен!');
-    } else {
-      quickIdx--;
-      renderQuickStep();
-    }
+    if (goForward) { quickIdx++; renderQuickStep(); }
+    else { quickIdx--; renderQuickStep(); }
   } else {
     const p = QUICK_PARAMS[quickIdx];
     if (p.type === 'num') {
@@ -739,12 +847,8 @@ function quickSaveCurrentAndAdvance(goForward) {
       if (inp) data[quickDk][p.key] = inp.value;
     }
     save();
-    if (goForward) {
-      quickIdx++;
-      renderQuickStep();
-    } else {
-      if (quickIdx > 0) { quickIdx--; renderQuickStep(); }
-    }
+    if (goForward) { quickIdx++; renderQuickStep(); }
+    else { if (quickIdx > 0) { quickIdx--; renderQuickStep(); } }
   }
 }
 
@@ -786,8 +890,138 @@ function getStats(days) {
   return s;
 }
 
+// ---- RENDER YEAR ----
+function renderYear() {
+  const today = new Date();
+  const year = today.getFullYear() + weekOffset;
+  document.getElementById('progressPeriodLabel').textContent = year + ' год';
+
+  const MONTH_FULL = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  const MONTH_SHORT = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+
+  // Collect monthly averages
+  const monthStats = Array.from({length:12}, (_,mi) => {
+    const days = [];
+    const last = new Date(year, mi+1, 0).getDate();
+    for (let d=1; d<=last; d++) days.push(new Date(year, mi, d));
+    const s = getStats(days);
+    return {
+      mood:  s.moodC  ? s.moodS/s.moodC   : null,
+      anx:   s.anxC   ? s.anxS/s.anxC      : null,
+      sleep: s.sleepC ? s.sleepS/s.sleepC  : null,
+      yoga:  s.yoga, thesis: s.totalThesis, total: days.length
+    };
+  });
+
+  // ---- MONTHLY BAR CHARTS ----
+  const H = 60;
+  const chartMetrics = [
+    { label:'Самочувствие', key:'mood',  color:'#A3B18A', max:10 },
+    { label:'Тревожность',  key:'anx',   color:'#D8B4A8', max:10 },
+    { label:'Качество сна', key:'sleep', color:'#A8BED8', max:10 },
+  ];
+  let chartHtml = '';
+  chartMetrics.forEach(m => {
+    const values = monthStats.map(ms => ms[m.key]!==null ? +ms[m.key].toFixed(1) : null);
+    chartHtml += '<div style="margin-bottom:28px">';
+    chartHtml += '<div class="chart-metric-label">'+m.label+'</div>';
+    chartHtml += '<div style="display:flex;gap:0">';
+    // Y-axis
+    chartHtml += '<div style="position:relative;width:24px;flex-shrink:0;height:'+(H+16)+'px">';
+    [0,5,10].forEach(gv => {
+      const bot = Math.round((gv/m.max)*H);
+      chartHtml += '<div style="position:absolute;bottom:'+(bot+16-5)+'px;right:2px;font-size:8px;color:var(--text3);font-weight:500;line-height:1">'+gv+'</div>';
+    });
+    chartHtml += '</div>';
+    // Chart body
+    chartHtml += '<div style="flex:1;position:relative;height:'+(H+16)+'px">';
+    [0,5,10].forEach(gv => {
+      const bot = Math.round((gv/m.max)*H)+16;
+      chartHtml += '<div style="position:absolute;left:0;right:0;bottom:'+bot+'px;height:1px;background:rgba(61,43,31,0.09)"></div>';
+    });
+    chartHtml += '<div style="position:absolute;left:0;right:0;top:0;bottom:0;display:flex;gap:2px;align-items:flex-end;padding-bottom:16px">';
+    values.forEach((v,i) => {
+      const h = v!==null ? Math.max(Math.round((v/m.max)*H),3) : 3;
+      const op = v!==null ? 1 : 0.15;
+      chartHtml += '<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%">';
+      if (v!==null) chartHtml += '<div style="text-align:center;font-size:7px;font-weight:600;color:var(--choco2);line-height:1;margin-bottom:2px">'+v+'</div>';
+      chartHtml += '<div style="height:'+h+'px;background:'+m.color+';opacity:'+op+';border-radius:3px 3px 0 0;transition:opacity 0.2s;cursor:default" '+
+        'title="'+MONTH_FULL[i]+': '+(v!==null?v:'нет данных')+'" '+
+        'onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\''+(v!==null?'1':'0.15')+'\'"></div>';
+      chartHtml += '</div>';
+    });
+    chartHtml += '</div>';
+    chartHtml += '<div style="position:absolute;left:0;right:0;bottom:0;height:14px;display:flex;gap:2px">';
+    MONTH_SHORT.forEach(l => {
+      chartHtml += '<div style="flex:1;text-align:center;font-size:8px;color:var(--choco3);font-weight:300;line-height:14px">'+l+'</div>';
+    });
+    chartHtml += '</div></div></div></div>';
+  });
+  document.getElementById('moodChart').innerHTML = chartHtml;
+
+  // ---- HEATMAP — months as columns, days as rows ----
+  const heatMetrics = [
+    { label:'Самочувствие', key:'mood',    invert:false, colors:['rgba(61,43,31,0.06)','#C8D8B4','#A3B18A'] },
+    { label:'Тревожность',  key:'anxiety', invert:true,  colors:['rgba(61,43,31,0.06)','#D8B4A8','#B85A1A'] },
+    { label:'Качество сна', key:'sleep',   invert:false, colors:['rgba(61,43,31,0.06)','#A8BED8','#4A6FA5'] },
+  ];
+
+  let heatHtml = '<div style="margin-top:8px">';
+  heatMetrics.forEach(hm => {
+    heatHtml += '<div style="margin-bottom:20px">';
+    heatHtml += '<div class="chart-metric-label" style="margin-bottom:8px">'+hm.label+' — каждый день</div>';
+    heatHtml += '<div style="display:flex;gap:3px">';
+    // Day labels
+    heatHtml += '<div style="display:flex;flex-direction:column;gap:2px;margin-right:2px;padding-top:18px">';
+    [1,5,10,15,20,25,31].forEach((d,idx,arr) => {
+      heatHtml += '<div style="font-size:7px;color:var(--text3);height:10px;line-height:10px;text-align:right">'+d+'</div>';
+      if (idx < arr.length-1) {
+        const gap = arr[idx+1]-d-1;
+        for (let i=0; i<gap; i++) heatHtml += '<div style="height:10px"></div>';
+      }
+    });
+    heatHtml += '</div>';
+    // Months
+    for (let mi=0; mi<12; mi++) {
+      const daysInMonth = new Date(year, mi+1, 0).getDate();
+      heatHtml += '<div style="display:flex;flex-direction:column;gap:2px;flex:1">';
+      heatHtml += '<div style="font-size:8px;color:var(--choco3);font-weight:600;text-align:center;height:14px;line-height:14px">'+MONTH_SHORT[mi]+'</div>';
+      for (let d=1; d<=31; d++) {
+        if (d > daysInMonth) { heatHtml += '<div style="height:10px"></div>'; continue; }
+        const dk = year+'-'+String(mi+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        const raw = data[dk] ? data[dk][hm.key] : undefined;
+        const v = (raw!==undefined && raw!=='') ? parseFloat(raw) : null;
+        let bg = 'rgba(61,43,31,0.06)';
+        if (v !== null) {
+          let tier;
+          if (hm.invert) { tier = v<=3?2:v<=7?1:0; }
+          else { tier = v<=3?0:v<=7?1:2; }
+          bg = hm.colors[tier];
+        }
+        const isT = (dk===dateKey(new Date()));
+        heatHtml += '<div style="height:10px;border-radius:2px;background:'+bg+
+          (isT?';outline:1.5px solid var(--accent)':'')+
+          '" title="'+MONTH_FULL[mi]+' '+d+(v!==null?': '+v:'')+'"></div>';
+      }
+      heatHtml += '</div>';
+    }
+    heatHtml += '</div>';
+    // Legend
+    heatHtml += '<div style="display:flex;align-items:center;gap:6px;margin-top:6px">';
+    heatHtml += '<span style="font-size:9px;color:var(--text3)">'+(hm.invert?'тревожно':'низко')+'</span>';
+    hm.colors.forEach(c => heatHtml += '<div style="width:14px;height:8px;border-radius:2px;background:'+c+'"></div>');
+    heatHtml += '<span style="font-size:9px;color:var(--text3)">'+(hm.invert?'спокойно':'высоко')+'</span>';
+    heatHtml += '</div></div>';
+  });
+  heatHtml += '</div>';
+
+  document.getElementById('habitsGrid').innerHTML = heatHtml;
+  document.querySelector('.section-title[style]') && (document.querySelector('.section-title').style.display='none');
+}
+
 // ---- RENDER PROGRESS ----
 function renderProgress() {
+  if (currentPeriod === 'year') { renderYear(); return; }
   const days = currentPeriod === 'week' ? getWeekDates(weekOffset) : getMonthDates(weekOffset);
   const s = getStats(days);
   const first=days[0], last=days[days.length-1];
@@ -800,7 +1034,7 @@ function renderProgress() {
       MONTH_NAMES[first.getMonth()]+' '+first.getFullYear();
   }
 
-  // Mood chart — rounded bars, light labels, hover effect
+  // Mood chart — rounded bars, value labels above, hover effect
   const labels = days.map(d => currentPeriod==='week' ? DAY_NAMES[d.getDay()] : d.getDate());
   const metrics = [
     { label:'Самочувствие', values:s.moodByDay, color:'#A3B18A' },
@@ -811,13 +1045,16 @@ function renderProgress() {
   metrics.forEach(m => {
     chartHtml += '<div style="margin-bottom:20px">';
     chartHtml += '<div class="chart-metric-label">'+m.label+'</div>';
-    chartHtml += '<div style="display:flex;gap:3px;align-items:flex-end;height:48px;margin-bottom:5px">';
+    chartHtml += '<div style="display:flex;gap:3px;align-items:flex-end;height:60px;margin-bottom:5px">';
     m.values.forEach(v => {
       const h = v!==null ? Math.max(Math.round((v/10)*48), 4) : 4;
       const op = v!==null ? 1 : 0.15;
-      chartHtml += '<div style="flex:1;height:'+h+'px;background:'+m.color+';opacity:'+op+
-        ';border-radius:4px 4px 0 0;min-height:4px;transition:opacity 0.2s;cursor:default" '+
-        'onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\''+(v!==null?'1':'0.15')+'\'"></div>';
+      chartHtml += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end">'+
+        '<div style="font-size:9px;font-weight:600;color:var(--choco2);margin-bottom:2px;font-family:Montserrat,sans-serif">'+(v!==null?v:'')+'</div>'+
+        '<div style="width:100%;height:'+h+'px;background:'+m.color+';opacity:'+op+
+        ';border-radius:4px 4px 0 0;transition:opacity 0.2s;cursor:default" '+
+        'onmouseover="this.style.opacity=\'0.7\'" onmouseout="this.style.opacity=\''+(v!==null?'1':'0.15')+'\'"></div>'+
+        '</div>';
     });
     chartHtml += '</div><div style="display:flex;gap:3px">';
     labels.forEach(l => {
@@ -825,7 +1062,6 @@ function renderProgress() {
     });
     chartHtml += '</div></div>';
   });
-  // Legend
   chartHtml += '<div style="display:flex;gap:14px;margin-top:4px;flex-wrap:wrap">';
   metrics.forEach(m => {
     chartHtml += '<div style="display:flex;align-items:center;gap:5px">'+
@@ -898,8 +1134,30 @@ function renderProgress() {
     chip('Фолиевая',    'folic',   s.folic+'/'+totalDays,       'дней',   '💊');
 }
 
+function glowStyle(ratio, invert) {
+  if (ratio === null) return '';
+  const r = invert ? (1 - ratio) : ratio;
+  if (r >= 0.7) return 'box-shadow:0 4px 18px rgba(92,150,80,0.38),0 0 0 1.5px rgba(92,150,80,0.18);border-color:rgba(92,150,80,0.25);';
+  if (r >= 0.4) return 'box-shadow:0 4px 18px rgba(212,168,50,0.35),0 0 0 1.5px rgba(212,168,50,0.18);border-color:rgba(212,168,50,0.25);';
+  return 'box-shadow:0 4px 18px rgba(190,80,60,0.30),0 0 0 1.5px rgba(190,80,60,0.18);border-color:rgba(190,80,60,0.20);';
+}
+
 function chip(label, key, val, sub, icon) {
-  return '<div class="habit-chip">'+
+  // Calculate ratio for glow
+  let ratio = null;
+  let invert = false;
+  const num = parseFloat(val);
+  if (!isNaN(num) && sub === 'среднее') {
+    ratio = num / 10;
+    invert = key === 'anxiety';
+  } else if (sub === 'дней' && typeof val === 'string' && val.includes('/')) {
+    const parts = val.split('/');
+    ratio = parseFloat(parts[0]) / parseFloat(parts[1]);
+  } else if (sub === 'часов' && !isNaN(num)) {
+    ratio = Math.min(num / 20, 1); // 20 hours/week = max
+  }
+  const glow = glowStyle(ratio, invert);
+  return '<div class="habit-chip" style="'+glow+'">'+
     '<div class="habit-chip-icon">'+icon+'</div>'+
     '<div class="habit-chip-label">'+label+'</div>'+
     '<div class="habit-chip-val">'+val+'</div>'+
@@ -911,9 +1169,12 @@ function renderTracker(days) {
   const table = document.getElementById('trackerTable');
   let html = '<thead><tr><th class="param-col">Параметр</th>';
   days.forEach(d => {
+    const dk = dateKey(d);
+    const isSelected = dk === selectedDk;
     const tc = isToday(d)?' today-cell':'';
     const bold = isToday(d)?'font-weight:600;color:#5C7A5E;':'';
-    html += '<th class="'+tc+'" style="'+bold+'">'+DAY_NAMES[d.getDay()]+'<br><span style="font-size:12px;font-weight:400">'+d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0')+'</span></th>';
+    const selStyle = isSelected ? 'background:rgba(92,122,94,0.18);border-radius:var(--radius-xs) var(--radius-xs) 0 0;outline:2px solid var(--accent);outline-offset:-2px;' : '';
+    html += '<th class="'+tc+'" style="'+bold+selStyle+'cursor:pointer;" onclick="selectDate(\''+dk+'\')">'+DAY_NAMES[d.getDay()]+'<br><span style="font-size:12px;font-weight:400">'+d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0')+'</span></th>';
   });
   html += '</tr></thead><tbody>';
 
@@ -923,7 +1184,7 @@ function renderTracker(days) {
     days.forEach(d => {
       const dk = dateKey(d);
       const val = data[dk]?data[dk][p.key]:null;
-      const tc = isToday(d)?' today-cell':'';
+      const tc = isToday(d)?' today-cell':(dk===selectedDk?' selected-cell':'');
       html += '<td class="day-cell'+tc+'">';
       if (p.type==='check') {
         const state=val||'';
@@ -937,14 +1198,13 @@ function renderTracker(days) {
         const v=(val||'').replace(/"/g,'&quot;').replace(/\n/g,'&#10;');
         html+='<textarea class="notes-input" onchange="setVal(\''+p.key+'\',\''+dk+'\',this.value)" placeholder="заметка...">'+v+'</textarea>';
       } else if (p.type==='awareness') {
-        // Show question in italic + answer below
         const stored = val || '';
         const parts = stored.split('\n---\n');
         const q = parts[0] || '';
         const a = parts[1] || '';
         if (q) {
-          html += '<div style="font-size:11px;color:var(--text3);font-style:italic;margin-bottom:3px;min-width:120px">'+q+'</div>';
-          html += '<div style="font-size:12px;color:var(--text)">'+a+'</div>';
+          html += '<div style="font-size:10px;color:var(--text3);font-style:italic;margin-bottom:3px;min-width:120px">'+q+'</div>';
+          html += '<div style="font-size:11px;color:var(--text)">'+a+'</div>';
         } else {
           html += '<span style="color:var(--text3);font-size:12px">—</span>';
         }
@@ -959,6 +1219,12 @@ function renderTracker(days) {
 
 // ---- MAIN RENDER ----
 function render() {
+  if (currentTab === 'progress' && currentPeriod === 'year') {
+    const year = new Date().getFullYear() + weekOffset;
+    document.getElementById('weekLabel').textContent = year + ' год';
+    renderProgress();
+    return;
+  }
   const days = getWeekDates(weekOffset);
   const first=days[0], last=days[6];
   document.getElementById('weekLabel').textContent =
